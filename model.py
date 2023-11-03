@@ -1,7 +1,7 @@
 from random import randrange, choice
 from pynput import keyboard
 
-from data import data
+from data import data, save_highscore
 
 # TODO <remove>
 from icecream import ic
@@ -155,3 +155,5 @@ def model():
                 game.move(event.key)
             if event.key == keyboard.Key.esc:
                 is_running = False
+                if data['score'] > data['highscore']:
+                    save_highscore(data['score'])

@@ -15,3 +15,4 @@ tkinter
 pynput
 threading
 icecream
+pickle
