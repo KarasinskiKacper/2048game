@@ -57,6 +57,13 @@ def app():
         # width=300,
     )
     score_bar.pack()
+    highscore_bar = ttk.Label(
+        master=window,
+        text=f"highscore: {data['highscore']}",
+        font=('Arial', 16, ),
+        # width=300,
+    )
+    highscore_bar.pack()
     bottom_section = ttk.Frame(
         master=window,
         width=300,
