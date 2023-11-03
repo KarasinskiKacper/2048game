@@ -3,6 +3,10 @@ from tkinter import ttk
 from pynput import keyboard
 from math import log2
 
+# TODO <remove>
+from icecream import ic
+# TODO </remove>
+
 from data import data
 
 def app():
@@ -16,7 +20,7 @@ def app():
         for i in range(11):
             s.configure(f'frame{2**(i+1)}.TFrame', background=f"#ff{colors[i]}00")
         wrapper = ttk.Frame(
-            master=window,
+            master=bottom_section,
             width=68,
             height=68,
             style='wrap.TFrame',
@@ -46,11 +50,23 @@ def app():
     window = tk.Tk()
     window.title("copy of 2048 game")
     window.geometry("300x400+0+0")
-
+    score_bar = ttk.Label(
+        master=window,
+        text=f"score: {data['score']}",
+        font=('Arial', 16, ),
+        # width=300,
+    )
+    score_bar.pack()
+    bottom_section = ttk.Frame(
+        master=window,
+        width=300,
+        height=300
+    )
+    bottom_section.pack()
+    
     for i in range(4):
         for j in range(4):
             create_grid_square(i, j, data['map'][j][i])
-
 
     window.update()    
     with keyboard.Events() as events:
@@ -61,6 +77,7 @@ def app():
                 for i in range(4):
                     for j in range(4):
                         create_grid_square(i, j, data['map'][j][i])
+                score_bar.config(text=f"score: {data['score']}")
                 window.update()
             if event.key == keyboard.Key.esc:
                 is_running = False

@@ -126,7 +126,7 @@ class Game():
                 print(LINE_UP, end='')
             print('\r', end='')
 
-        res = f'score: {self.score}\n'
+        res = f"score: {data['score']}\n"
         for i in range(self.mapSize):
             for j in range(self.mapSize):
                 if self.map[j][i] == None:
