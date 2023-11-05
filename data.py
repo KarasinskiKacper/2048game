@@ -25,6 +25,14 @@ def save_highscore(new_highscore: int):
         with open('./.save', 'wb') as file:
             dump({'highscore': data['highscore']}, file)
         
+def save_active_game_data():
+    data_to_save = {
+        'map': data['map'],
+        'score': data['score']
+    }
+    with open('./.save', 'wb') as file:
+        dump(data_to_save, file)        
+        
 def load_data():
     if isfile('./.save'):
         with open('./.save','rb') as file:

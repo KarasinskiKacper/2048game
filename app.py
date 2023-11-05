@@ -75,16 +75,23 @@ def app():
         for j in range(4):
             create_grid_square(i, j, data['map'][j][i])
 
-    window.update()    
-    with keyboard.Events() as events:
-        is_running = True
-        while is_running:
-            event = events.get()
-            if type(event) == keyboard.Events.Press:
-                for i in range(4):
-                    for j in range(4):
-                        create_grid_square(i, j, data['map'][j][i])
+    def update_app():
+        for i in range(4):
+            for j in range(4):
+                create_grid_square(i, j, data['map'][j][i])
                 score_bar.config(text=f"score: {data['score']}")
                 window.update()
-            if event.key == keyboard.Key.esc:
-                is_running = False
+
+    window.update()    
+    # with keyboard.Events() as events:
+    #     is_running = True
+    #     while is_running:
+    #         event = events.get()
+    #         if type(event) == keyboard.Events.Press:
+    #             for i in range(4):
+    #                 for j in range(4):
+    #                     create_grid_square(i, j, data['map'][j][i])
+    #             score_bar.config(text=f"score: {data['score']}")
+    #             window.update()
+    #         if event.key == keyboard.Key.esc:
+    #             is_running = False

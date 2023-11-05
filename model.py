@@ -1,7 +1,8 @@
 from random import randrange, choice
 from pynput import keyboard
 
-from data import data, save_highscore
+from data import *
+from app import app
 
 # TODO <remove>
 from icecream import ic
@@ -13,92 +14,116 @@ class Game():
         self.map = [[None for _ in range(mapSize)] for _ in range(mapSize)]
         self.score = 0
         self.spawnTile()
+        data['map'] = self.map
+        data['score'] = self.score
     
     def spawnTile(self) -> None:
         empty_space = [(i%self.mapSize, int(i//self.mapSize)) for i in range(self.mapSize**2) if self.map[i%self.mapSize][int(i//self.mapSize)] == None]
         x, y = choice(empty_space)
         self.map[x][y] = 2 if randrange(100)<90 else 4
         
-    def move(self, player_choise):
+    def keyboardHandler(self, player_choise):
         key = keyboard.Key
+        key_code = keyboard.KeyCode        
         is_change = False
-        match player_choise:
-            case key.left:
-                for x in range(self.mapSize):
-                    for y in range(self.mapSize):
-                        tile_value = self.map[x][y]
-                        if tile_value != None:
-                            new_x = x 
-                            while new_x > 0 and (self.map[new_x-1][y] == None or self.map[new_x-1][y] == tile_value):
-                                new_x -= 1
-                            if new_x != x:
-                                is_change = True
-                                self.map[x][y] = None
-                                if self.map[new_x][y] == tile_value:
-                                    self.map[new_x][y] = tile_value*2
-                                    self.score += tile_value*2
-                                else:
-                                    self.map[new_x][y] = tile_value
-                                
-            case key.right:
-                 for x in range(self.mapSize-1, -1, -1):
-                    for y in range(self.mapSize-1, -1, -1):
-                        tile_value = self.map[x][y]
-                        if tile_value != None:
-                            new_x = x 
-                            while new_x < self.mapSize-1 and (self.map[new_x+1][y] == None or self.map[new_x+1][y] == tile_value):
-                                new_x += 1
-                            if new_x != x:
-                                is_change = True
-                                self.map[x][y] = None
-                                if self.map[new_x][y] == tile_value:
-                                    self.map[new_x][y] = tile_value*2
-                                    self.score += tile_value*2
-                                else:
-                                    self.map[new_x][y] = tile_value
+        
+        if isinstance(player_choise, key):
+        # move handle
+            match player_choise:
+                case key.left:
+                    for x in range(self.mapSize):
+                        for y in range(self.mapSize):
+                            tile_value = self.map[x][y]
+                            if tile_value != None:
+                                new_x = x 
+                                while new_x > 0 and (self.map[new_x-1][y] == None or self.map[new_x-1][y] == tile_value):
+                                    new_x -= 1
+                                if new_x != x:
+                                    is_change = True
+                                    self.map[x][y] = None
+                                    if self.map[new_x][y] == tile_value:
+                                        self.map[new_x][y] = tile_value*2
+                                        self.score += tile_value*2
+                                    else:
+                                        self.map[new_x][y] = tile_value
                                     
-            case key.up:
-                for x in range(self.mapSize):
-                    for y in range(self.mapSize):
-                        tile_value = self.map[x][y]
-                        if tile_value != None:
-                            new_y = y 
-                            while new_y > 0 and (self.map[x][new_y-1] == None or self.map[x][new_y-1] == tile_value):
-                                new_y -= 1
-                            if new_y != y:
-                                is_change = True
-                                self.map[x][y] = None
-                                if self.map[x][new_y] == tile_value:
-                                    self.map[x][new_y] = tile_value*2
-                                    self.score += tile_value*2
-                                else:
-                                    self.map[x][new_y] = tile_value
-                                    
-            case key.down:
-                for x in range(self.mapSize-1, -1, -1):
-                    for y in range(self.mapSize-1, -1, -1):
-                        tile_value = self.map[x][y]
-                        if tile_value != None:
-                            new_y = y 
-                            while new_y < self.mapSize-1 and (self.map[x][new_y+1] == None or self.map[x][new_y+1] == tile_value):
-                                new_y += 1
-                            if new_y != y:
-                                is_change = True
-                                self.map[x][y] = None
-                                if self.map[x][new_y] == tile_value:
-                                    self.map[x][new_y] = tile_value*2
-                                    self.score += tile_value*2
-                                else:
-                                    self.map[x][new_y] = tile_value
-                                    
-            case key.esc:
-                ic('game over')
-                
+                case key.right:
+                    for x in range(self.mapSize-1, -1, -1):
+                        for y in range(self.mapSize-1, -1, -1):
+                            tile_value = self.map[x][y]
+                            if tile_value != None:
+                                new_x = x 
+                                while new_x < self.mapSize-1 and (self.map[new_x+1][y] == None or self.map[new_x+1][y] == tile_value):
+                                    new_x += 1
+                                if new_x != x:
+                                    is_change = True
+                                    self.map[x][y] = None
+                                    if self.map[new_x][y] == tile_value:
+                                        self.map[new_x][y] = tile_value*2
+                                        self.score += tile_value*2
+                                    else:
+                                        self.map[new_x][y] = tile_value
+                                        
+                case key.up:
+                    for x in range(self.mapSize):
+                        for y in range(self.mapSize):
+                            tile_value = self.map[x][y]
+                            if tile_value != None:
+                                new_y = y 
+                                while new_y > 0 and (self.map[x][new_y-1] == None or self.map[x][new_y-1] == tile_value):
+                                    new_y -= 1
+                                if new_y != y:
+                                    is_change = True
+                                    self.map[x][y] = None
+                                    if self.map[x][new_y] == tile_value:
+                                        self.map[x][new_y] = tile_value*2
+                                        self.score += tile_value*2
+                                    else:
+                                        self.map[x][new_y] = tile_value
+                                        
+                case key.down:
+                    for x in range(self.mapSize-1, -1, -1):
+                        for y in range(self.mapSize-1, -1, -1):
+                            tile_value = self.map[x][y]
+                            if tile_value != None:
+                                new_y = y 
+                                while new_y < self.mapSize-1 and (self.map[x][new_y+1] == None or self.map[x][new_y+1] == tile_value):
+                                    new_y += 1
+                                if new_y != y:
+                                    is_change = True
+                                    self.map[x][y] = None
+                                    if self.map[x][new_y] == tile_value:
+                                        self.map[x][new_y] = tile_value*2
+                                        self.score += tile_value*2
+                                    else:
+                                        self.map[x][new_y] = tile_value
+                                        
+        else:
+            # can't be match, because for some reason "keyboard.KeyCode.from_char(<char>)" cause: 
+            # TypeError: called match pattern must be a type
+            if player_choise == key_code.from_char('r'): 
+                self.resetGame()
+            elif player_choise == key_code.from_char('s'):
+                save_active_game_data()
+            elif player_choise == key_code.from_char('l'):
+                load_data()
+                self.score = data['score']
+                self.displayMap()
+                 
         if is_change:
             self.spawnTile()
             self.displayMap()
             self.checkGameEnd()
             
+    def endGame(self) -> None:
+        if data['score'] > data['highscore']:
+            save_highscore(data['score'])
+            
+    def resetGame(self) -> None:
+        self.endGame()
+        self = Game(self.mapSize)
+        self.displayMap()
+        
     def checkGameEnd(self) -> None:
         is_move_possible = False
         for x in range(self.mapSize):
@@ -152,8 +177,8 @@ def model():
         while is_running:
             event = events.get()
             if type(event) == keyboard.Events.Press:
-                game.move(event.key)
+                game.keyboardHandler(event.key)
+                
             if event.key == keyboard.Key.esc:
                 is_running = False
-                if data['score'] > data['highscore']:
-                    save_highscore(data['score'])
+                game.endGame()
