@@ -10,6 +10,10 @@ data = {
 def force_save_data():
     with open('./.save', 'wb') as file:
         dump(data, file)
+
+def force_save_custom_data(data_to_save: dict):
+    with open('./.save', 'wb') as file:
+        dump(data_to_save, file)
         
 def save_highscore(new_highscore: int):
     if isfile('./.save'):
@@ -39,3 +43,11 @@ def load_data():
             loaded_data = load(file)
             for k, v in loaded_data.items():
                 data[k] = v
+
+def print_saved_data():
+    if isfile('./.save'):
+        with open('./.save','rb') as file:
+            loaded_data = load(file)
+            print(loaded_data)
+    else:
+        print("File not found.")
