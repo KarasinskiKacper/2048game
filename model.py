@@ -107,6 +107,7 @@ class Game():
                 save_active_game_data()
             elif player_choise == key_code.from_char('l'):
                 load_data()
+                self.map = data['map'] 
                 self.score = data['score']
                 self.displayMap()
                  

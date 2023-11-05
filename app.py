@@ -49,7 +49,7 @@ def app():
 
     window = tk.Tk()
     window.title("copy of 2048 game")
-    window.geometry("300x400+0+0")
+    window.geometry("300x500+0+0")
     score_bar = ttk.Label(
         master=window,
         text=f"score: {data['score']}",
@@ -70,28 +70,35 @@ def app():
         height=300
     )
     bottom_section.pack()
+
+    up_arrow = u'\u2191'
+    down_arrow = u'\u2193'
+    right_arrow = u'\u2192'
+    left_arrow = u'\u2190'
+    how_to_play_bar = ttk.Label(
+        master=window,
+        width=300,
+        text=f"How to play:\nmove - {left_arrow} {up_arrow} {right_arrow} {down_arrow}\nreset game - r\nsave game - s\nload game - l\nexit - esc",
+        font=('Arial', 16, ),
+        justify="left",
+        padding=(20, 0)
+    )
+    how_to_play_bar.pack()
     
     for i in range(4):
         for j in range(4):
             create_grid_square(i, j, data['map'][j][i])
 
-    def update_app():
-        for i in range(4):
-            for j in range(4):
-                create_grid_square(i, j, data['map'][j][i])
-                score_bar.config(text=f"score: {data['score']}")
-                window.update()
-
     window.update()    
-    # with keyboard.Events() as events:
-    #     is_running = True
-    #     while is_running:
-    #         event = events.get()
-    #         if type(event) == keyboard.Events.Press:
-    #             for i in range(4):
-    #                 for j in range(4):
-    #                     create_grid_square(i, j, data['map'][j][i])
-    #             score_bar.config(text=f"score: {data['score']}")
-    #             window.update()
-    #         if event.key == keyboard.Key.esc:
-    #             is_running = False
+    with keyboard.Events() as events:
+        is_running = True
+        while is_running:
+            event = events.get()
+            # if type(event) == keyboard.Events.Press:
+            for i in range(4):
+                for j in range(4):
+                    create_grid_square(i, j, data['map'][j][i])
+            score_bar.config(text=f"score: {data['score']}")
+            window.update()
+            if event.key == keyboard.Key.esc:
+                is_running = False
