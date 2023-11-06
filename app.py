@@ -2,12 +2,13 @@ import tkinter as tk
 from tkinter import ttk
 from pynput import keyboard
 from math import log2
+from time import sleep
 
 # TODO <remove>
 from icecream import ic
 # TODO </remove>
 
-from data import data
+from data import game_data, app_data
 
 def app():
     def create_grid_square(row, col, value):
@@ -52,14 +53,14 @@ def app():
     window.geometry("300x500+0+0")
     score_bar = ttk.Label(
         master=window,
-        text=f"score: {data['score']}",
+        text=f"score: {game_data['score']}",
         font=('Arial', 16, ),
         # width=300,
     )
     score_bar.pack()
     highscore_bar = ttk.Label(
         master=window,
-        text=f"highscore: {data['highscore']}",
+        text=f"highscore: {game_data['highscore']}",
         font=('Arial', 16, ),
         # width=300,
     )
@@ -85,20 +86,35 @@ def app():
     )
     how_to_play_bar.pack()
     
-    for i in range(4):
-        for j in range(4):
-            create_grid_square(i, j, data['map'][j][i])
+    def update_all():
+        for i in range(4):
+            for j in range(4):
+                create_grid_square(i, j, game_data['map'][j][i])
+        window.update()    
+    update_all()
+    # with keyboard.Events() as events:
+    #     is_running = True
+    #     while is_running:
+    #         event = events.get()
+    #         # if type(event) == keyboard.Events.Press:
+    #         for i in range(4):
+    #             for j in range(4):
+    #                 create_grid_square(i, j, data['map'][j][i])
+    #         score_bar.config(text=f"score: {data['score']}")
+    #         window.update()
+    #         if event.key == keyboard.Key.esc:
+    #             is_running = False
+    # is_running = True
 
-    window.update()    
-    with keyboard.Events() as events:
-        is_running = True
-        while is_running:
-            event = events.get()
-            # if type(event) == keyboard.Events.Press:
-            for i in range(4):
-                for j in range(4):
-                    create_grid_square(i, j, data['map'][j][i])
-            score_bar.config(text=f"score: {data['score']}")
-            window.update()
-            if event.key == keyboard.Key.esc:
-                is_running = False
+    sleeptime = 1/app_data['fps']
+    while app_data['is_game_running']:
+        # event = events.get()
+        # if type(event) == keyboard.Events.Press:
+        for i in range(4):
+            for j in range(4):
+                create_grid_square(i, j, game_data['map'][j][i])
+        score_bar.config(text=f"score: {game_data['score']}")
+        update_all()
+        sleep(sleeptime)
+        # if event.key == keyboard.Key.esc:
+        #     is_running = False

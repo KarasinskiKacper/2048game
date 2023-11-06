@@ -2,11 +2,11 @@ from random import randrange, choice
 from pynput import keyboard
 
 from data import *
-from app import app
 
 # TODO <remove>
 from icecream import ic
 # TODO </remove>
+
         
 class Game():
     def __init__(self, mapSize: int = 4) -> None:
@@ -14,8 +14,8 @@ class Game():
         self.map = [[None for _ in range(mapSize)] for _ in range(mapSize)]
         self.score = 0
         self.spawnTile()
-        data['map'] = self.map
-        data['score'] = self.score
+        game_data['map'] = self.map
+        game_data['score'] = self.score
     
     def spawnTile(self) -> None:
         empty_space = [(i%self.mapSize, int(i//self.mapSize)) for i in range(self.mapSize**2) if self.map[i%self.mapSize][int(i//self.mapSize)] == None]
@@ -107,8 +107,8 @@ class Game():
                 save_active_game_data()
             elif player_choise == key_code.from_char('l'):
                 load_data()
-                self.map = data['map'] 
-                self.score = data['score']
+                self.map = game_data['map'] 
+                self.score = game_data['score']
                 self.displayMap()
                  
         if is_change:
@@ -117,12 +117,14 @@ class Game():
             self.checkGameEnd()
             
     def endGame(self) -> None:
-        if data['score'] > data['highscore']:
-            save_highscore(data['score'])
+        if game_data['score'] > game_data['highscore']:
+            save_highscore(game_data['score'])
             
     def resetGame(self) -> None:
         self.endGame()
-        self = Game(self.mapSize)
+        self.map = [[None for _ in range(self.mapSize)] for _ in range(self.mapSize)]
+        self.score = 0
+        self.spawnTile()
         self.displayMap()
         
     def checkGameEnd(self) -> None:
@@ -145,14 +147,14 @@ class Game():
             keyboard.Controller().tap(keyboard.Key.esc)
      
     def displayMap(self, is_console_need_refresh: bool = True) -> None:
-        data['map'] = self.map
+        game_data['map'] = self.map
         if is_console_need_refresh:
             LINE_UP  = '\033[1A'
             for _ in range(self.mapSize*2-1):
                 print(LINE_UP, end='')
             print('\r', end='')
 
-        res = f"score: {data['score']}\n"
+        res = f"score: {game_data['score']}\n"
         for i in range(self.mapSize):
             for j in range(self.mapSize):
                 if self.map[j][i] == None:
@@ -167,19 +169,19 @@ class Game():
         return self.__score
     @score.setter
     def score(self, newValue):
-        data['score'] = newValue
+        game_data['score'] = newValue
         self.__score = newValue
     
+
 def model():
     game = Game()
     game.displayMap(False)
     with keyboard.Events() as events:
-        is_running = True
-        while is_running:
+        while app_data['is_game_running']:
             event = events.get()
             if type(event) == keyboard.Events.Press:
                 game.keyboardHandler(event.key)
                 
             if event.key == keyboard.Key.esc:
-                is_running = False
+                app_data['is_game_running'] = False
                 game.endGame()

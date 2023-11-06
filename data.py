@@ -1,15 +1,20 @@
 from pickle import dump, load
 from os.path import isfile
 
-data = {
+game_data = {
     'map': [[None for _ in range(4)] for _ in range(4)],
     'score': 0,
     'highscore': 0,
 }
 
+app_data = {
+    'is_game_running': True,
+    'fps': 60,
+}
+
 def force_save_data():
     with open('./game.save', 'wb') as file:
-        dump(data, file)
+        dump(game_data, file)
 
 def force_save_custom_data(data_to_save: dict):
     with open('./game.save', 'wb') as file:
@@ -27,12 +32,12 @@ def save_highscore(new_highscore: int):
             
     else:
         with open('./game.save', 'wb') as file:
-            dump({'highscore': data['highscore']}, file)
+            dump({'highscore': game_data['highscore']}, file)
         
 def save_active_game_data():
     data_to_save = {
-        'map': data['map'],
-        'score': data['score']
+        'map': game_data['map'],
+        'score': game_data['score']
     }
     with open('./game.save', 'wb') as file:
         dump(data_to_save, file)        
@@ -42,7 +47,7 @@ def load_data():
         with open('./game.save','rb') as file:
             loaded_data = load(file)
             for k, v in loaded_data.items():
-                data[k] = v
+                game_data[k] = v
 
 def print_saved_data():
     if isfile('./game.save'):
